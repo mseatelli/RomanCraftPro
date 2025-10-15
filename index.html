@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RomanCraft - Assistant d'écriture complet</title>
+    <meta name="description" content="Application d'aide à l'écriture pour auteurs de romans">
+    <meta name="theme-color" content="#4a306d">
+    <link rel="manifest" href="data:application/manifest+json,{}">
+    <style>
+        :root {
+            --primary: #4a306d;
+            --secondary: #7b52ab;
+            --light: #f5f0ff;
+            --dark: #2d1b4e;
+            --accent: #e6b0ff;
+            --text: #333333;
+            --shadow: rgba(74, 48, 109, 0.2);
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px var(--shadow);
+            text-align: center;
+            position: relative;
+        }
+        
+        .header-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        .tab-button {
+            padding: 12px 20px;
+            background-color: white;
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button:hover {
+            background-color: var(--accent);
+        }
+        
+        .tab-button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 12px var(--shadow);
+            margin-bottom: 20px;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-row > div {
+            flex: 1;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--light);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .card p {
+            margin-bottom: 10px;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .inspiration-section {
+            background-color: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        
+        .inspiration-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .inspiration-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .character-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-right: 15px;
+            float: left;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .role-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: var(--accent);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .export-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .header-actions {
+                position: static;
+                justify-content: center;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>RomanCraft Pro</h1>
+            <p class="subtitle">Votre assistant personnel pour créer des romans captivants</p>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="import-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                    Importer
+                </button>
+                <button class="btn btn-success" id="export-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                    Exporter
+                </button>
+            </div>
+        </header>
+        
+        <div class="nav-tabs">
+            <button class="tab-button active" data-tab="dashboard">Tableau de bord</button>
+            <button class="tab-button" data-tab="characters">Personnages</button>
+            <button class="tab-button" data-tab="locations">Lieux</button>
+            <button class="tab-button" data-tab="plot">Intrigue</button>
+            <button class="tab-button" data-tab="inspiration">Inspiration</button>
+            <button class="tab-button" data-tab="story-roles">Rôles narratifs</button>
+        </div>
+        
+        <!-- Tableau de bord -->
+        <div id="dashboard" class="tab-content active">
+            <h2>Tableau de bord</h2>
+            <p>Bienvenue dans votre espace d'écriture. Utilisez les différentes sections pour développer votre univers littéraire.</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="character-count">0</div>
+                    <div class="stat-label">Personnages</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="location-count">0</div>
+                    <div class="stat-label">Lieux</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="plot-count">0</div>
+                    <div class="stat-label">Éléments d'intrigue</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="role-count">0</div>
+                    <div class="stat-label">Rôles narratifs</div>
+                </div>
+            </div>
+            
+            <div class="inspiration-section">
+                <h3>Conseil du jour</h3>
+                <div class="inspiration-item">
+                    <p id="daily-tip">Pour donner vie à vos personnages, imaginez comment ils réagiraient dans des situations quotidiennes banales, comme faire la queue ou perdre leurs clés.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Personnages -->
+        <div id="characters" class="tab-content">
+            <h2>Création de personnages</h2>
+            <p>Développez des personnages complexes et mémorables avec cette fiche détaillée.</p>
+            
+            <form id="character-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="character-name">Nom du personnage</label>
+                        <input type="text" id="character-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="character-role">Rôle principal</label>
+                        <select id="character-role">
+                            <option value="protagonist">Protagoniste</option>
+                            <option value="antagonist">Antagoniste</option>
+                            <option value="deuteragonist">Deutéragoniste</option>
+                            <option value="tritagonist">Tritagoniste</option>
+                            <option value="confidant">Confident</option>
+                            <option value="love-interest">Intérêt amoureux</option>
+                            <option value="foil">Contrepoint</option>
+                            <option value="mentor">Mentor</option>
+                            <option value="supporting">Secondaire</option>
+                            <option value="minor">Figurant</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="character-story-roles">Rôles narratifs (optionnel)</label>
+                    <div id="story-roles-checkboxes">
+                        <!-- Les cases à cocher seront générées dynamiquement -->
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="character-appearance">Apparence physique</label>
+                    <textarea id="character-appearance" placeholder="Décrivez l'apparence de votre personnage..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="character-personality">Personnalité et traits de caractère</label>
+                    <textarea id="character-personality" placeholder="Décrivez la personnalité de votre personnage..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="character-backstory">Histoire personnelle</label>
+                    <textarea id="character-backstory" placeholder="Racontez le passé de votre personnage..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="character-motivations">Motivations et objectifs</label>
+                    <textarea id="character-motivations" placeholder="Qu'est-ce qui motive votre personnage?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="character-flaws">Faiblesses et défauts</label>
+                    <textarea id="character-flaws" placeholder="Quels sont les défauts de votre personnage?"></textarea>
+                </div>
+                
+                <button type="submit" class="btn">Enregistrer le personnage</button>
+            </form>
+            
+            <div id="characters-list" class="grid" style="margin-top: 30px;">
+                <!-- Les personnages créés apparaîtront ici -->
+            </div>
+        </div>
+        
+        <!-- Lieux -->
+        <div id="locations" class="tab-content">
+            <h2>Création de lieux</h2>
+            <p>Définissez l'atmosphère et les détails de vos différents lieux pour immerger vos lecteurs.</p>
+            
+            <form id="location-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="location-name">Nom du lieu</label>
+                        <input type="text" id="location-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="location-type">Type de lieu</label>
+                        <select id="location-type">
+                            <option value="city">Ville</option>
+                            <option value="village">Village</option>
+                            <option value="forest">Forêt</option>
+                            <option value="mountain">Montagne</option>
+                            <option value="desert">Désert</option>
+                            <option value="ocean">Océan</option>
+                            <option value="island">Île</option>
+                            <option value="castle">Château</option>
+                            <option value="house">Maison</option>
+                            <option value="tavern">Taverne</option>
+                            <option value="temple">Temple</option>
+                            <option value="dungeon">Donjon</option>
+                            <option value="labyrinth">Labyrinthe</option>
+                            <option value="market">Marché</option>
+                            <option value="palace">Palais</option>
+                            <option value="ruins">Ruines</option>
+                            <option value="other">Autre</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location-description">Description</label>
+                    <textarea id="location-description" placeholder="Décrivez ce lieu en détail..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location-atmosphere">Atmosphère et ambiance</label>
+                    <textarea id="location-atmosphere" placeholder="Quelle ambiance se dégage de ce lieu?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location-history">Histoire du lieu</label>
+                    <textarea id="location-history" placeholder="Quelle est l'histoire de ce lieu?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location-importance">Importance dans l'histoire</label>
+                    <textarea id="location-importance" placeholder="Quel rôle joue ce lieu dans votre récit?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location-characters">Personnages associés</label>
+                    <input type="text" id="location-characters" placeholder="Quels personnages sont liés à ce lieu?">
+                </div>
+                
+                <button type="submit" class="btn">Enregistrer le lieu</button>
+            </form>
+            
+            <div id="locations-list" class="grid" style="margin-top: 30px;">
+                <!-- Les lieux créés apparaîtront ici -->
+            </div>
+        </div>
+        
+        <!-- Intrigue -->
+        <div id="plot" class="tab-content">
+            <h2>Développement de l'intrigue</h2>
+            <p>Structurez votre histoire avec des éléments narratifs clés.</p>
+            
+            <form id="plot-form">
+                <div class="form-group">
+                    <label for="plot-element-type">Type d'élément narratif</label>
+                    <select id="plot-element-type">
+                        <option value="inciting-incident">Élément déclencheur</option>
+                        <option value="plot-point-1">Premier point de l'intrigue</option>
+                        <option value="plot-point-2">Deuxième point de l'intrigue</option>
+                        <option value="midpoint">Point médian</option>
+                        <option value="climax">Climax</option>
+                        <option value="resolution">Résolution</option>
+                        <option value="twist">Rebondissement</option>
+                        <option value="conflict">Conflit</option>
+                        <option value="foreshadowing">Préfiguration</option>
+                        <option value="revelation">Révélation</option>
+                        <option value="setback">Revers</option>
+                        <option value="victory">Victoire</option>
+                        <option value="darkest-moment">Moment le plus sombre</option>
+                        <option value="redemption">Rédemption</option>
+                        <option value="betrayal">Trahison</option>
+                        <option value="sacrifice">Sacrifice</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="plot-title">Titre de l'élément</label>
+                    <input type="text" id="plot-title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="plot-description">Description</label>
+                    <textarea id="plot-description" placeholder="Décrivez cet élément narratif..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="plot-characters">Personnages impliqués</label>
+                    <input type="text" id="plot-characters" placeholder="Listez les personnages concernés...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="plot-locations">Lieux concernés</label>
+                    <input type="text" id="plot-locations" placeholder="Où se déroule cet élément?">
+                </div>
+                
+                <div class="form-group">
+                    <label for="plot-importance">Importance narrative</label>
+                    <select id="plot-importance">
+                        <option value="low">Faible</option>
+                        <option value="medium">Moyenne</option>
+                        <option value="high">Élevée</option>
+                        <option value="critical">Critique</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">Enregistrer l'élément</button>
+            </form>
+            
+            <div id="plot-list" class="grid" style="margin-top: 30px;">
+                <!-- Les éléments d'intrigue créés apparaîtront ici -->
+            </div>
+        </div>
+        
+        <!-- Inspiration -->
+        <div id="inspiration" class="tab-content">
+            <h2>Boîte à idées</h2>
+            <p>Des générateurs aléatoires pour stimuler votre créativité.</p>
+            
+            <div class="inspiration-section">
+                <h3>Générateur de conflits</h3>
+                <div class="inspiration-item" id="conflict-generator">
+                    <p>Cliquez pour générer un conflit narratif</p>
+                </div>
+                <button class="btn" id="generate-conflict">Nouveau conflit</button>
+            </div>
+            
+            <div class="inspiration-section">
+                <h3>Générateur de relations entre personnages</h3>
+                <div class="inspiration-item" id="relationship-generator">
+                    <p>Cliquez pour générer une relation entre personnages</p>
+                </div>
+                <button class="btn" id="generate-relationship">Nouvelle relation</button>
+            </div>
+            
+            <div class="inspiration-section">
+                <h3>Générateur de scénarios</h3>
+                <div class="inspiration-item" id="scenario-generator">
+                    <p>Cliquez pour générer un scénario de départ</p>
+                </div>
+                <button class="btn" id="generate-scenario">Nouveau scénario</button>
+            </div>
+            
+            <div class="inspiration-section">
+                <h3>Générateur de concepts de mondes</h3>
+                <div class="inspiration-item" id="world-generator">
+                    <p>Cliquez pour générer un concept de monde</p>
+                </div>
+                <button class="btn" id="generate-world">Nouveau concept</button>
+            </div>
+            
+            <div class="inspiration-section">
+                <h3>Générateur de dilemmes moraux</h3>
+                <div class="inspiration-item" id="dilemma-generator">
+                    <p>Cliquez pour générer un dilemme moral</p>
+                </div>
+                <button class="btn" id="generate-dilemma">Nouveau dilemme</button>
+            </div>
+            
+            <div class="inspiration-section">
+                <h3>Générateur de fins alternatives</h3>
+                <div class="inspiration-item" id="ending-generator">
+                    <p>Cliquez pour générer une fin alternative</p>
+                </div>
+                <button class="btn" id="generate-ending">Nouvelle fin</button>
+            </div>
+        </div>
+        
+        <!-- Rôles narratifs -->
+        <div id="story-roles" class="tab-content">
+            <h2>Rôles narratifs</h2>
+            <p>Définissez des rôles narratifs que vous pouvez attribuer à vos personnages pour enrichir votre histoire.</p>
+            
+            <form id="story-role-form">
+                <div class="form-group">
+                    <label for="role-name">Nom du rôle</label>
+                    <input type="text" id="role-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="role-description">Description du rôle</label>
+                    <textarea id="role-description" placeholder="Décrivez ce rôle narratif..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="role-examples">Exemples de personnages</label>
+                    <textarea id="role-examples" placeholder="Donnez des exemples de personnages célèbres qui remplissent ce rôle..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn">Ajouter le rôle</button>
+            </form>
+            
+            <div id="story-roles-list" class="grid" style="margin-top: 30px;">
+                <!-- Les rôles narratifs créés apparaîtront ici -->
+            </div>
+        </div>
+        
+        <footer>
+            <p>RomanCraft Pro - Votre compagnon d'écriture • Toutes vos données sont stockées localement sur votre appareil</p>
+        </footer>
+    </div>
+
+    <!-- Modal d'exportation -->
+    <div class="modal" id="export-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Exporter vos données</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <p>Choisissez le format d'exportation :</p>
+            <div class="export-options">
+                <button class="btn" id="export-json">JSON</button>
+                <button class="btn btn-success" id="export-word">Word (.docx)</button>
+                <button class="btn" id="export-text">Texte brut</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal d'importation -->
+    <div class="modal" id="import-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Importer des données</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <p>Sélectionnez un fichier à importer :</p>
+            <div class="form-group">
+                <input type="file" id="import-file" accept=".json,.txt,.docx">
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="import-merge">
+                    Fusionner avec les données existantes
+                </label>
+            </div>
+            <button class="btn" id="confirm-import">Importer</button>
+        </div>
+    </div>
+
+    <script>
+        // Données de l'application
+        let appData = {
+            characters: [],
+            locations: [],
+            plotElements: [],
+            storyRoles: [
+                {
+                    id: 1,
+                    name: "Le Héros",
+                    description: "Le personnage principal qui mène l'histoire et subit une transformation.",
+                    examples: "Luke Skywalker (Star Wars), Harry Potter"
+                },
+                {
+                    id: 2,
+                    name: "Le Mentor",
+                    description: "Guide le héros en partageant sagesse et expérience.",
+                    examples: "Obi-Wan Kenobi (Star Wars), Dumbledore (Harry Potter)"
+                },
+                {
+                    id: 3,
+                    name: "Le Gardien du Seuil",
+                    description: "Teste le héros avant qu'il ne puisse progresser dans son voyage.",
+                    examples: "Cerbère (mythologie grecque), le Sphinx (Œdipe)"
+                },
+                {
+                    id: 4,
+                    name: "Le Héraut",
+                    description: "Annonce l'arrivée d'un changement important dans l'histoire.",
+                    examples: "R2-D2 (Star Wars), Hedwige (Harry Potter)"
+                },
+                {
+                    id: 5,
+                    name: "Le Change-forme",
+                    description: "Personnage dont la loyauté ou la nature est ambiguë.",
+                    examples: "Han Solo (Star Wars), Severus Rogue (Harry Potter)"
+                },
+                {
+                    id: 6,
+                    name: "L'Ombre",
+                    description: "Représente les côtés sombres ou refoulés du héros.",
+                    examples: "Voldemort (Harry Potter), Dark Vador (Star Wars)"
+                },
+                {
+                    id: 7,
+                    name: "Le Trickster",
+                    description: "Apporte l'humour et défie les conventions établies.",
+                    examples: "Merlin (Arthur), Loki (mythologie nordique)"
+                }
+            ]
+        };
+        
+        // Charger les données depuis le localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('romanCraftData');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                appData.characters = parsedData.characters || [];
+                appData.locations = parsedData.locations || [];
+                appData.plotElements = parsedData.plotElements || [];
+                appData.storyRoles = parsedData.storyRoles || appData.storyRoles;
+                updateDashboard();
+                renderCharacters();
+                renderLocations();
+                renderPlotElements();
+                renderStoryRoles();
+                updateStoryRolesCheckboxes();
+            }
+        }
+        
+        // Sauvegarder les données dans le localStorage
+        function saveData() {
+            localStorage.setItem('romanCraftData', JSON.stringify(appData));
+            updateDashboard();
+        }
+        
+        // Mettre à jour le tableau de bord
+        function updateDashboard() {
+            document.getElementById('character-count').textContent = appData.characters.length;
+            document.getElementById('location-count').textContent = appData.locations.length;
+            document.getElementById('plot-count').textContent = appData.plotElements.length;
+            document.getElementById('role-count').textContent = appData.storyRoles.length;
+            
+            // Mettre à jour le conseil du jour
+            const tips = [
+                "Pour donner vie à vos personnages, imaginez comment ils réagiraient dans des situations quotidiennes banales.",
+                "Un bon antagoniste croit être le héros de sa propre histoire. Donnez-lui des motivations crédibles.",
+                "Les lieux peuvent être des personnages à part entière. Pensez à leur histoire et à leur atmosphère.",
+                "L'intrigue devrait avancer grâce aux décisions des personnages, pas par coïncidence.",
+                "Montrez, ne racontez pas. Au lieu de dire 'il avait peur', décrivez ses mains tremblantes.",
+                "Créez des tensions en donnant à vos personnages des objectifs contradictoires.",
+                "Un bon dialogue révèle la personnalité des personnages et fait avancer l'intrigue.",
+                "N'ayez pas peur de faire souffrir vos personnages. Les épreuves les rendent plus intéressants.",
+                "Établissez des règles claires pour votre univers et respectez-les pour maintenir la crédibilité.",
+                "La fin devrait être à la fois surprenante et inévitable, découlant naturellement de l'histoire."
+            ];
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+            document.getElementById('daily-tip').textContent = randomTip;
+        }
+        
+        // Navigation par onglets
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Désactiver tous les onglets
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Activer l'onglet sélectionné
+                button.classList.add('active');
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
+        
+        // Gestion des formulaires
+        document.getElementById('character-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const selectedRoles = Array.from(document.querySelectorAll('input[name="story-roles"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            const character = {
+                id: Date.now(),
+                name: document.getElementById('character-name').value,
+                role: document.getElementById('character-role').value,
+                storyRoles: selectedRoles,
+                appearance: document.getElementById('character-appearance').value,
+                personality: document.getElementById('character-personality').value,
+                backstory: document.getElementById('character-backstory').value,
+                motivations: document.getElementById('character-motivations').value,
+                flaws: document.getElementById('character-flaws').value
+            };
+            
+            appData.characters.push(character);
+            saveData();
+            renderCharacters();
+            this.reset();
+            
+            // Réinitialiser les cases à cocher
+            document.querySelectorAll('input[name="story-roles"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        });
+        
+        document.getElementById('location-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const location = {
+                id: Date.now(),
+                name: document.getElementById('location-name').value,
+                type: document.getElementById('location-type').value,
+                description: document.getElementById('location-description').value,
+                atmosphere: document.getElementById('location-atmosphere').value,
+                history: document.getElementById('location-history').value,
+                importance: document.getElementById('location-importance').value,
+                characters: document.getElementById('location-characters').value
+            };
+            
+            appData.locations.push(location);
+            saveData();
+            renderLocations();
+            this.reset();
+        });
+        
+        document.getElementById('plot-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const plotElement = {
+                id: Date.now(),
+                type: document.getElementById('plot-element-type').value,
+                title: document.getElementById('plot-title').value,
+                description: document.getElementById('plot-description').value,
+                characters: document.getElementById('plot-characters').value,
+                locations: document.getElementById('plot-locations').value,
+                importance: document.getElementById('plot-importance').value
+            };
+            
+            appData.plotElements.push(plotElement);
+            saveData();
+            renderPlotElements();
+            this.reset();
+        });
+        
+        document.getElementById('story-role-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const storyRole = {
+                id: Date.now(),
+                name: document.getElementById('role-name').value,
+                description: document.getElementById('role-description').value,
+                examples: document.getElementById('role-examples').value
+            };
+            
+            appData.storyRoles.push(storyRole);
+            saveData();
+            renderStoryRoles();
+            updateStoryRolesCheckboxes();
+            this.reset();
+        });
+        
+        // Afficher les personnages
+        function renderCharacters() {
+            const container = document.getElementById('characters-list');
+            container.innerHTML = '';
+            
+            appData.characters.forEach(character => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                const roleLabels = {
+                    'protagonist': 'Protagoniste',
+                    'antagonist': 'Antagoniste',
+                    'deuteragonist': 'Deutéragoniste',
+                    'tritagonist': 'Tritagoniste',
+                    'confidant': 'Confident',
+                    'love-interest': 'Intérêt amoureux',
+                    'foil': 'Contrepoint',
+                    'mentor': 'Mentor',
+                    'supporting': 'Secondaire',
+                    'minor': 'Figurant'
+                };
+                
+                let rolesHTML = '';
+                if (character.storyRoles && character.storyRoles.length > 0) {
+                    rolesHTML = '<div style="margin-top: 10px;">';
+                    character.storyRoles.forEach(roleId => {
+                        const role = appData.storyRoles.find(r => r.id == roleId);
+                        if (role) {
+                            rolesHTML += `<span class="role-tag">${role.name}</span>`;
+                        }
+                    });
+                    rolesHTML += '</div>';
+                }
+                
+                card.innerHTML = `
+                    <div class="character-avatar">${character.name.charAt(0)}</div>
+                    <h3>${character.name}</h3>
+                    <p><strong>Rôle:</strong> ${roleLabels[character.role]}</p>
+                    <p>${character.personality.substring(0, 100)}...</p>
+                    ${rolesHTML}
+                    <div class="card-actions">
+                        <button class="btn btn-secondary" onclick="viewCharacter(${character.id})">Voir</button>
+                        <button class="btn btn-secondary" onclick="deleteCharacter(${character.id})">Supprimer</button>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Afficher les lieux
+        function renderLocations() {
+            const container = document.getElementById('locations-list');
+            container.innerHTML = '';
+            
+            appData.locations.forEach(location => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                card.innerHTML = `
+                    <h3>${location.name}</h3>
+                    <p><strong>Type:</strong> ${location.type}</p>
+                    <p>${location.description.substring(0, 100)}...</p>
+                    <div class="card-actions">
+                        <button class="btn btn-secondary" onclick="viewLocation(${location.id})">Voir</button>
+                        <button class="btn btn-secondary" onclick="deleteLocation(${location.id})">Supprimer</button>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Afficher les éléments d'intrigue
+        function renderPlotElements() {
+            const container = document.getElementById('plot-list');
+            container.innerHTML = '';
+            
+            appData.plotElements.forEach(element => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                const typeLabels = {
+                    'inciting-incident': 'Élément déclencheur',
+                    'plot-point-1': 'Premier point de l\'intrigue',
+                    'plot-point-2': 'Deuxième point de l\'intrigue',
+                    'midpoint': 'Point médian',
+                    'climax': 'Climax',
+                    'resolution': 'Résolution',
+                    'twist': 'Rebondissement',
+                    'conflict': 'Conflit',
+                    'foreshadowing': 'Préfiguration',
+                    'revelation': 'Révélation',
+                    'setback': 'Revers',
+                    'victory': 'Victoire',
+                    'darkest-moment': 'Moment le plus sombre',
+                    'redemption': 'Rédemption',
+                    'betrayal': 'Trahison',
+                    'sacrifice': 'Sacrifice'
+                };
+                
+                const importanceLabels = {
+                    'low': 'Faible',
+                    'medium': 'Moyenne',
+                    'high': 'Élevée',
+                    'critical': 'Critique'
+                };
+                
+                card.innerHTML = `
+                    <h3>${element.title}</h3>
+                    <p><strong>Type:</strong> ${typeLabels[element.type]}</p>
+                    <p><strong>Importance:</strong> ${importanceLabels[element.importance]}</p>
+                    <p>${element.description.substring(0, 100)}...</p>
+                    <div class="card-actions">
+                        <button class="btn btn-secondary" onclick="viewPlotElement(${element.id})">Voir</button>
+                        <button class="btn btn-secondary" onclick="deletePlotElement(${element.id})">Supprimer</button>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Afficher les rôles narratifs
+        function renderStoryRoles() {
+            const container = document.getElementById('story-roles-list');
+            container.innerHTML = '';
+            
+            appData.storyRoles.forEach(role => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                card.innerHTML = `
+                    <h3>${role.name}</h3>
+                    <p>${role.description}</p>
+                    <p><strong>Exemples:</strong> ${role.examples}</p>
+                    <div class="card-actions">
+                        <button class="btn btn-secondary" onclick="viewStoryRole(${role.id})">Voir</button>
+                        <button class="btn btn-secondary" onclick="deleteStoryRole(${role.id})">Supprimer</button>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Mettre à jour les cases à cocher des rôles narratifs
+        function updateStoryRolesCheckboxes() {
+            const container = document.getElementById('story-roles-checkboxes');
+            container.innerHTML = '';
+            
+            appData.storyRoles.forEach(role => {
+                const checkbox = document.createElement('div');
+                checkbox.innerHTML = `
+                    <label style="display: inline-flex; align-items: center; margin-right: 15px;">
+                        <input type="checkbox" name="story-roles" value="${role.id}" style="width: auto; margin-right: 5px;">
+                        ${role.name}
+                    </label>
+                `;
+                container.appendChild(checkbox);
+            });
+        }
+        
+        // Fonctions pour visualiser les éléments (simplifiées pour cet exemple)
+        function viewCharacter(id) {
+            const character = appData.characters.find(c => c.id === id);
+            let rolesText = '';
+            if (character.storyRoles && character.storyRoles.length > 0) {
+                rolesText = '\nRôles narratifs: ' + character.storyRoles.map(roleId => {
+                    const role = appData.storyRoles.find(r => r.id == roleId);
+                    return role ? role.name : '';
+                }).join(', ');
+            }
+            
+            alert(`Nom: ${character.name}\nRôle: ${character.role}${rolesText}\nApparence: ${character.appearance}\nPersonnalité: ${character.personality}\nHistoire: ${character.backstory}\nMotivations: ${character.motivations}\nFaiblesses: ${character.flaws}`);
+        }
+        
+        function viewLocation(id) {
+            const location = appData.locations.find(l => l.id === id);
+            alert(`Nom: ${location.name}\nType: ${location.type}\nDescription: ${location.description}\nAtmosphère: ${location.atmosphere}\nHistoire: ${location.history}\nImportance: ${location.importance}\nPersonnages: ${location.characters}`);
+        }
+        
+        function viewPlotElement(id) {
+            const element = appData.plotElements.find(p => p.id === id);
+            alert(`Titre: ${element.title}\nType: ${element.type}\nDescription: ${element.description}\nPersonnages: ${element.characters}\nLieux: ${element.locations}\nImportance: ${element.importance}`);
+        }
+        
+        function viewStoryRole(id) {
+            const role = appData.storyRoles.find(r => r.id === id);
+            alert(`Nom: ${role.name}\nDescription: ${role.description}\nExemples: ${role.examples}`);
+        }
+        
+        // Fonctions de suppression
+        function deleteCharacter(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce personnage?')) {
+                appData.characters = appData.characters.filter(c => c.id !== id);
+                saveData();
+                renderCharacters();
+            }
+        }
+        
+        function deleteLocation(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce lieu?')) {
+                appData.locations = appData.locations.filter(l => l.id !== id);
+                saveData();
+                renderLocations();
+            }
+        }
+        
+        function deletePlotElement(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet élément d\'intrigue?')) {
+                appData.plotElements = appData.plotElements.filter(p => p.id !== id);
+                saveData();
+                renderPlotElements();
+            }
+        }
+        
+        function deleteStoryRole(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce rôle narratif?')) {
+                appData.storyRoles = appData.storyRoles.filter(r => r.id !== id);
+                saveData();
+                renderStoryRoles();
+                updateStoryRolesCheckboxes();
+            }
+        }
+        
+        // Générateurs d'inspiration
+        const conflicts = [
+            "Un secret familial refait surface et menace de détruire tout ce que le personnage a construit.",
+            "Deux alliés découvrent qu'ils poursuivent des objectifs diamétralement opposés.",
+            "Le personnage doit choisir entre son devoir et ses sentiments personnels.",
+            "Une force naturelle imprévue met en péril la communauté tout entière.",
+            "Le personnage découvre que son mentor lui a menti sur quelque chose de fondamental.",
+            "Une rivalité professionnelle dégénère en guerre ouverte avec des conséquences désastreuses.",
+            "Le personnage est accusé d'un crime qu'il n'a pas commis et doit prouver son innocence.",
+            "Une malédiction ancienne s'abat sur le royaume et seul un sacrifice peut l'arrêter.",
+            "La technologie sur laquelle repose la société commence à montrer des signes de défaillance catastrophique.",
+            "Un être cher est pris en otage et le personnage doit trahir ses principes pour le sauver."
+        ];
+        
+        const relationships = [
+            "Deux ennemis jurés doivent s'allier pour survivre à une menace commune.",
+            "Une relation d'amitié se transforme lentement en rivalité toxique.",
+            "Un mentor et son élève découvrent qu'ils partagent un lien de parenté inattendu.",
+            "Deux personnes de milieux sociaux très différents tombent amoureuses malgré les obstacles.",
+            "Une relation fraternelle est mise à l'épreuve par un héritage contesté.",
+            "Un ancien amour refait surface au moment le plus inopportun, créant un triangle amoureux.",
+            "Le sauveur et la personne sauvée développent une relation de dépendance malsaine.",
+            "Deux espions de factions ennemies tombent amoureux lors d'une mission.",
+            "Une amitié d'enfance est testée lorsque l'un accède au pouvoir et l'autre reste dans l'ombre.",
+            "Le bourreau et sa victime développent une relation complexe basée sur la compréhension mutuelle."
+        ];
+        
+        const scenarios = [
+            "Un étranger arrive dans une communauté isolée, apportant avec lui à la fois l'espoir et le danger.",
+            "La découverte d'un artefact ancien confère des pouvoirs extraordinaires mais à un prix terrible.",
+            "Une prophétie oubliée semble s'accomplir, mais pas de la manière que quiconque avait prévu.",
+            "Un personnage ordinaire découvre qu'il est l'héritier d'un royaume dont il ignorait l'existence.",
+            "Une expérience scientifique tourne mal, libérant quelque chose qui ne devrait pas exister.",
+            "La dernière bibliothèque d'un savoir ancien est menacée de destruction par un pouvoir tyrannique.",
+            "Un groupe de marginaux doit unir ses forces pour sauver un monde qui les a rejetés.",
+            "Le temps commence à s'écouler à l'envers, et seul un groupe de personnes en est conscient.",
+            "Dans une société où les émotions sont contrôlées, quelqu'un commence à ressentir librement.",
+            "Les morts se réveillent, mais pas comme des zombies - ils reviennent exactement comme ils étaient avant de mourir."
+        ];
+        
+        const worlds = [
+            "Un monde où la magie est une ressource rare et précieuse, contrôlée par une élite corrompue.",
+            "Une société steampunk où la technologie à vapeur a atteint des niveaux incroyables de sophistication.",
+            "Une planète avec plusieurs soleils, où la notion de 'nuit' n'existe pas et la société s'est adaptée en conséquence.",
+            "Un univers où les rêves sont tangibles et peuvent être collectés, échangés ou même volés.",
+            "Une civilisation sous-marine développée, avec des villes construites dans les abysses océaniques.",
+            "Un monde post-apocalyptique où la nature a repris ses droits sur les ruines de l'ancienne civilisation.",
+            "Une dimension parallèle où les lois de la physique sont différentes et la magie est commune.",
+            "Une société futuriste où les humains peuvent télécharger leurs consciences dans des corps artificiels.",
+            "Un royaume flottant constitué d'îles volantes, chacune avec sa propre culture et écosystème.",
+            "Une terre où les frontières entre les contes de fées et la réalité sont de plus en plus floues."
+        ];
+        
+        const dilemmas = [
+            "Sacrifier une personne innocente pour en sauver mille.",
+            "Dénoncer un être cher pour un crime mineur ou le protéger et risquer des conséquences pires.",
+            "Utiliser une arme immorale pour gagner une guerre juste.",
+            "Garder un secret qui protégerait beaucoup de gens mais mentirait à quelqu'un qui vous fait confiance.",
+            "Choisir entre sauver votre famille ou des inconnus qui pourraient changer le destin du monde.",
+            "Trahir vos principes pour obtenir un pouvoir qui vous permettrait de faire plus de bien à long terme.",
+            "Détruire une œuvre d'art inestimable pour sauver des vies.",
+            "Laisser un méchant s'échapper pour sauver un otage, sachant qu'il fera plus de mal plus tard.",
+            "Utiliser la connaissance d'un futur possible pour changer le présent, au risque de créer un paradoxe.",
+            "Révéler une vérité qui libérera une société mais détruira la vie de personnes innocentes."
+        ];
+        
+        const endings = [
+            "Le héros meurt en accomplissant sa mission, devenant une légende pour les générations futures.",
+            "L'antagoniste se rachète au dernier moment, sacrifiant sa vie pour le bien commun.",
+            "Il s'avère que toute l'aventure n'était qu'un rêve ou une simulation.",
+            "Le héros découvre qu'il était le méchant de l'histoire tout along.",
+            "Le conflit principal se résout par la communication et la compréhension mutuelle plutôt que par la violence.",
+            "Le monde est sauvé, mais au prix de la perte de la magie/technologie qui le rendait spécial.",
+            "Le héros renonce à son pouvoir ou à son statut pour vivre une vie simple et heureuse.",
+            "L'histoire se termine sur un cliffhanger, préparant une suite.",
+            "Le héros et l'antagoniste réalisent qu'ils ont été manipulés par une tierce partie tout au long du conflit.",
+            "La fin est ouverte, laissant au lecteur le soin d'imaginer ce qui se passe ensuite."
+        ];
+        
+        document.getElementById('generate-conflict').addEventListener('click', function() {
+            const randomConflict = conflicts[Math.floor(Math.random() * conflicts.length)];
+            document.getElementById('conflict-generator').innerHTML = `<p>${randomConflict}</p>`;
+        });
+        
+        document.getElementById('generate-relationship').addEventListener('click', function() {
+            const randomRelationship = relationships[Math.floor(Math.random() * relationships.length)];
+            document.getElementById('relationship-generator').innerHTML = `<p>${randomRelationship}</p>`;
+        });
+        
+        document.getElementById('generate-scenario').addEventListener('click', function() {
+            const randomScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+            document.getElementById('scenario-generator').innerHTML = `<p>${randomScenario}</p>`;
+        });
+        
+        document.getElementById('generate-world').addEventListener('click', function() {
+            const randomWorld = worlds[Math.floor(Math.random() * worlds.length)];
+            document.getElementById('world-generator').innerHTML = `<p>${randomWorld}</p>`;
+        });
+        
+        document.getElementById('generate-dilemma').addEventListener('click', function() {
+            const randomDilemma = dilemmas[Math.floor(Math.random() * dilemmas.length)];
+            document.getElementById('dilemma-generator').innerHTML = `<p>${randomDilemma}</p>`;
+        });
+        
+        document.getElementById('generate-ending').addEventListener('click', function() {
+            const randomEnding = endings[Math.floor(Math.random() * endings.length)];
+            document.getElementById('ending-generator').innerHTML = `<p>${randomEnding}</p>`;
+        });
+        
+        // Gestion de l'exportation
+        document.getElementById('export-btn').addEventListener('click', function() {
+            document.getElementById('export-modal').style.display = 'flex';
+        });
+        
+        document.getElementById('export-json').addEventListener('click', function() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            downloadBlob(dataBlob, 'romancraft-data.json');
+        });
+        
+        document.getElementById('export-text').addEventListener('click', function() {
+            let textContent = "ROMANCRAFT - EXPORTATION DE DONNÉES\n\n";
+            textContent += "PERSONNAGES\n";
+            appData.characters.forEach(char => {
+                textContent += `- ${char.name} (${char.role})\n`;
+            });
+            
+            textContent += "\nLIEUX\n";
+            appData.locations.forEach(loc => {
+                textContent += `- ${loc.name} (${loc.type})\n`;
+            });
+            
+            textContent += "\nÉLÉMENTS D'INTRIGUE\n";
+            appData.plotElements.forEach(plot => {
+                textContent += `- ${plot.title} (${plot.type})\n`;
+            });
+            
+            textContent += "\nRÔLES NARRATIFS\n";
+            appData.storyRoles.forEach(role => {
+                textContent += `- ${role.name}\n`;
+            });
+            
+            const dataBlob = new Blob([textContent], {type: 'text/plain'});
+            downloadBlob(dataBlob, 'romancraft-data.txt');
+        });
+        
+        document.getElementById('export-word').addEventListener('click', function() {
+            // Simulation d'export Word - dans une vraie application, on utiliserait une bibliothèque
+            alert("Fonctionnalité d'export Word - Dans une version complète, cela générerait un vrai fichier .docx");
+        });
+        
+        // Gestion de l'importation
+        document.getElementById('import-btn').addEventListener('click', function() {
+            document.getElementById('import-modal').style.display = 'flex';
+        });
+        
+        document.getElementById('confirm-import').addEventListener('click', function() {
+            const fileInput = document.getElementById('import-file');
+            const merge = document.getElementById('import-merge').checked;
+            
+            if (fileInput.files.length === 0) {
+                alert("Veuillez sélectionner un fichier à importer.");
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (merge) {
+                        // Fusionner avec les données existantes
+                        if (importedData.characters) {
+                            appData.characters = [...appData.characters, ...importedData.characters];
+                        }
+                        if (importedData.locations) {
+                            appData.locations = [...appData.locations, ...importedData.locations];
+                        }
+                        if (importedData.plotElements) {
+                            appData.plotElements = [...appData.plotElements, ...importedData.plotElements];
+                        }
+                        if (importedData.storyRoles) {
+                            appData.storyRoles = [...appData.storyRoles, ...importedData.storyRoles];
+                        }
+                    } else {
+                        // Remplacer les données existantes
+                        appData = importedData;
+                    }
+                    
+                    saveData();
+                    renderCharacters();
+                    renderLocations();
+                    renderPlotElements();
+                    renderStoryRoles();
+                    updateStoryRolesCheckboxes();
+                    
+                    document.getElementById('import-modal').style.display = 'none';
+                    alert("Données importées avec succès!");
+                } catch (error) {
+                    alert("Erreur lors de l'importation: le fichier n'est pas au format valide.");
+                }
+            };
+            
+            reader.readAsText(file);
+        });
+        
+        // Fonction utilitaire pour télécharger un blob
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Fermer les modales
+        document.querySelectorAll('.close-modal').forEach(button => {
+            button.addEventListener('click', function() {
+                this.closest('.modal').style.display = 'none';
+            });
+        });
+        
+        // Fermer les modales en cliquant à l'extérieur
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+        
+        // Initialiser l'application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            
+            // Activer les générateurs d'inspiration
+            document.getElementById('generate-conflict').click();
+            document.getElementById('generate-relationship').click();
+            document.getElementById('generate-scenario').click();
+            document.getElementById('generate-world').click();
+            document.getElementById('generate-dilemma').click();
+            document.getElementById('generate-ending').click();
+        });
+        
+        // Service Worker pour PWA (simplifié)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful');
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
