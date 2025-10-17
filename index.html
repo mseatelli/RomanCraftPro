@@ -358,6 +358,83 @@
             flex-wrap: wrap;
         }
         
+        .location-category {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: var(--light);
+            border-radius: 8px;
+        }
+        
+        .location-category h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .custom-location-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 2px dashed var(--primary);
+        }
+        
+        .plot-category {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: var(--light);
+            border-radius: 8px;
+        }
+        
+        .plot-category h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .custom-plot-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 2px dashed var(--primary);
+        }
+        
+        .plot-tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            border-bottom: 1px dotted var(--primary);
+        }
+        
+        .plot-tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .plot-tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
         @media (max-width: 768px) {
             .form-row {
                 flex-direction: column;
@@ -376,6 +453,11 @@
                 position: static;
                 justify-content: center;
                 margin-top: 15px;
+            }
+            
+            .plot-tooltip .tooltiptext {
+                width: 250px;
+                margin-left: -125px;
             }
         }
     </style>
@@ -524,23 +606,7 @@
                     <div class="form-group">
                         <label for="location-type">Type de lieu</label>
                         <select id="location-type">
-                            <option value="city">Ville</option>
-                            <option value="village">Village</option>
-                            <option value="forest">Forêt</option>
-                            <option value="mountain">Montagne</option>
-                            <option value="desert">Désert</option>
-                            <option value="ocean">Océan</option>
-                            <option value="island">Île</option>
-                            <option value="castle">Château</option>
-                            <option value="house">Maison</option>
-                            <option value="tavern">Taverne</option>
-                            <option value="temple">Temple</option>
-                            <option value="dungeon">Donjon</option>
-                            <option value="labyrinth">Labyrinthe</option>
-                            <option value="market">Marché</option>
-                            <option value="palace">Palais</option>
-                            <option value="ruins">Ruines</option>
-                            <option value="other">Autre</option>
+                            <!-- Les options seront générées dynamiquement -->
                         </select>
                     </div>
                 </div>
@@ -573,6 +639,31 @@
                 <button type="submit" class="btn">Enregistrer le lieu</button>
             </form>
             
+            <!-- Formulaire pour ajouter un nouveau type de lieu -->
+            <div class="custom-location-form">
+                <h3>Ajouter un nouveau type de lieu</h3>
+                <form id="custom-location-type-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="new-location-type">Nom du nouveau type</label>
+                            <input type="text" id="new-location-type" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-location-category">Catégorie</label>
+                            <select id="new-location-category">
+                                <option value="urban">🏙️ Lieux urbains modernes</option>
+                                <option value="nature">🌲 Lieux naturels ou isolés</option>
+                                <option value="historical">🕰️ Lieux chargés d'histoire</option>
+                                <option value="futuristic">🧬 Lieux futuristes ou technologiques</option>
+                                <option value="mysterious">🌙 Lieux mystérieux ou symboliques</option>
+                                <option value="other">Autre</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Ajouter ce type</button>
+                </form>
+            </div>
+            
             <div id="locations-list" class="grid" style="margin-top: 30px;">
                 <!-- Les lieux créés apparaîtront ici -->
             </div>
@@ -581,28 +672,15 @@
         <!-- Intrigue -->
         <div id="plot" class="tab-content">
             <h2>Développement de l'intrigue</h2>
-            <p>Structurez votre histoire avec des éléments narratifs clés.</p>
+            <p>Structurez votre histoire avec des éléments narratifs clés. <span class="plot-tooltip">Passez votre souris sur les éléments pour voir leur explication
+                <span class="tooltiptext">Chaque élément narratif a une fonction spécifique dans la construction de votre histoire. Ces explications vous aideront à choisir les bons éléments pour chaque moment de votre récit.</span>
+            </span></p>
             
             <form id="plot-form">
                 <div class="form-group">
                     <label for="plot-element-type">Type d'élément narratif</label>
                     <select id="plot-element-type">
-                        <option value="inciting-incident">Élément déclencheur</option>
-                        <option value="plot-point-1">Premier point de l'intrigue</option>
-                        <option value="plot-point-2">Deuxième point de l'intrigue</option>
-                        <option value="midpoint">Point médian</option>
-                        <option value="climax">Climax</option>
-                        <option value="resolution">Résolution</option>
-                        <option value="twist">Rebondissement</option>
-                        <option value="conflict">Conflit</option>
-                        <option value="foreshadowing">Préfiguration</option>
-                        <option value="revelation">Révélation</option>
-                        <option value="setback">Revers</option>
-                        <option value="victory">Victoire</option>
-                        <option value="darkest-moment">Moment le plus sombre</option>
-                        <option value="redemption">Rédemption</option>
-                        <option value="betrayal">Trahison</option>
-                        <option value="sacrifice">Sacrifice</option>
+                        <!-- Les options seront générées dynamiquement -->
                     </select>
                 </div>
                 
@@ -638,6 +716,31 @@
                 
                 <button type="submit" class="btn">Enregistrer l'élément</button>
             </form>
+            
+            <!-- Formulaire pour ajouter un nouveau type d'élément narratif -->
+            <div class="custom-plot-form">
+                <h3>Ajouter un nouveau type d'élément narratif</h3>
+                <form id="custom-plot-type-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="new-plot-type">Nom du nouveau type</label>
+                            <input type="text" id="new-plot-type" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-plot-category">Catégorie</label>
+                            <select id="new-plot-category">
+                                <option value="structure">🧩 Structure et dynamique de l'histoire</option>
+                                <option value="emotions">💔 Émotions et relations</option>
+                                <option value="dramatic">⚙️ Fonctions dramatiques secondaires</option>
+                                <option value="symbolic">🌙 Symboliques et thématiques</option>
+                                <option value="classic">🎭 Éléments narratifs classiques</option>
+                                <option value="other">Autre</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Ajouter ce type</button>
+                </form>
+            </div>
             
             <div id="plot-list" class="grid" style="margin-top: 30px;">
                 <!-- Les éléments d'intrigue créés apparaîtront ici -->
@@ -818,7 +921,92 @@
                     description: "Apporte l'humour et défie les conventions établies.",
                     examples: "Merlin (Arthur), Loki (mythologie nordique)"
                 }
-            ]
+            ],
+            locationTypes: {
+                "urban": [
+                    "Station de métro", "Gratte-ciel", "Immeuble", "Musée", "Hôtel de luxe",
+                    "Bibliothèque", "Toit d'immeuble", "Parking souterrain", "Pont suspendu",
+                    "Rue piétonne", "Appartement", "Centre commercial", "Quai de gare",
+                    "Gare", "Hôpital", "Couloir de maintenance", "Jardin", "Tunnel"
+                ],
+                "nature": [
+                    "Cabane", "Phare", "Plage", "Grotte", "Rivage", "Jardin d'hiver",
+                    "Ferme", "Lac", "Sentier", "Forêt", "Montagne", "Désert", "Océan", "Île"
+                ],
+                "historical": [
+                    "Abbaye", "Asile", "Monastère", "Maison bourgeoise", "Hôtel particulier",
+                    "Bunker", "Château", "Ruines", "Temple"
+                ],
+                "futuristic": [
+                    "Cité flottante", "Laboratoire", "Station orbitale", "Parc d'attractions",
+                    "Donjon", "Labyrinthe", "Marché", "Palais"
+                ],
+                "mysterious": [
+                    "Un théâtre où les acteurs jouent sans spectateurs",
+                    "Un ascenseur qui s'arrête parfois à un étage inexistant",
+                    "Cimetière", "Eglise", "Cathédrale", "Chapelle", "Crypte"
+                ],
+                "other": [
+                    "Ville", "Village", "Maison", "Taverne", "Autre"
+                ]
+            },
+            plotTypes: {
+                "structure": [
+                    {name: "Prologue", description: "Introduction qui met en place le ton général ou un événement passé déterminant pour l'histoire"},
+                    {name: "Élément perturbateur", description: "L'événement initial qui bouleverse l'équilibre de la situation et lance l'action principale"},
+                    {name: "Montée de la tension", description: "Série d'événements qui amplifient progressivement les enjeux et la pression sur les personnages"},
+                    {name: "Retournement de situation (twist)", description: "Changement inattendu de direction narrative qui modifie la perception de l'histoire"},
+                    {name: "Fausse piste", description: "Élément trompeur qui oriente délibérément le lecteur vers une conclusion erronée"},
+                    {name: "Dénouement", description: "Résolution finale qui apporte une fermeture logique ou émotionnelle aux conflits principaux"},
+                    {name: "Épilogue", description: "Section finale qui offre un regard sur les conséquences de l'histoire, parfois dans un futur lointain"}
+                ],
+                "emotions": [
+                    {name: "Moment de doute", description: "Point où le protagoniste remet en question ses convictions, ses capacités ou sa mission"},
+                    {name: "Confrontation", description: "Rencontre directe et souvent explosive entre le héros et l'antagoniste principal"},
+                    {name: "Perte", description: "Événement douloureux impliquant la mort, la séparation ou le renoncement à quelque chose de précieux"},
+                    {name: "Réconciliation", description: "Rétablissement d'un lien brisé entre personnages, souvent après un conflit important"},
+                    {name: "Confession", description: "Révélation intime d'un secret, d'un passé caché ou de sentiments refoulés"},
+                    {name: "Tentations", description: "Situation présentant un choix moral difficile ou une attirance dangereuse pour le personnage"},
+                    {name: "Illumination", description: "Prise de conscience soudaine qui apporte une compréhension profonde d'une vérité essentielle"}
+                ],
+                "dramatic": [
+                    {name: "Catalyseur", description: "Événement ou personnage qui accélère le changement et pousse l'action vers l'avant"},
+                    {name: "Obstacle", description: "Barrière concrète ou psychologique qui bloque temporairement la progression du héros"},
+                    {name: "Allié", description: "Personnage secondaire qui apporte son aide et soutient le protagoniste dans son évolution"},
+                    {name: "Mentor", description: "Figure guide qui transmet sagesse, savoir ou pouvoir au personnage principal"},
+                    {name: "Antagoniste intérieur", description: "Conflit interne représentant les peurs, culpabilités ou traumas du héros"},
+                    {name: "MacGuffin", description: "Objet ou but qui motive l'action des personnages sans avoir d'importance réelle en soi"}
+                ],
+                "symbolic": [
+                    {name: "Mirage / illusion", description: "Situation créant une confusion entre la réalité et les apparences trompeuses"},
+                    {name: "Cycle", description: "Répétition d'un motif, d'un schéma ou d'un destin à travers l'histoire"},
+                    {name: "Épreuve initiatique", description: "Étape cruciale qui marque la transformation et la maturation du héros"},
+                    {name: "Rupture du monde ordinaire", description: "Passage décisif du héros vers un univers différent ou extraordinaire"},
+                    {name: "Retour au foyer", description: "Moment où le héros revient changé, apportant avec lui les enseignements de son voyage"},
+                    {name: "Message moral", description: "Le sens final et la leçon philosophique qui émerge de l'expérience vécue"}
+                ],
+                "classic": [
+                    {name: "Élément déclencheur", description: "Événement initial qui perturbe l'équilibre et lance l'intrigue principale"},
+                    {name: "Premier point de l'intrigue", description: "Moment charnière qui engage définitivement le héros dans l'aventure"},
+                    {name: "Deuxième point de l'intrigue", description: "Événement qui relance l'action avant le climax et augmente les enjeux"},
+                    {name: "Point médian", description: "Tournant au milieu de l'histoire qui change la donne et la perception des événements"},
+                    {name: "Climax", description: "Point culminant de l'intrigue où le conflit principal atteint son paroxysme"},
+                    {name: "Résolution", description: "Dénouement qui apporte une conclusion aux différents fils narratifs"},
+                    {name: "Rebondissement", description: "Révélation surprise qui modifie radicalement la compréhension de l'histoire"},
+                    {name: "Conflit", description: "Opposition entre forces, personnages ou idées qui génère la tension dramatique"},
+                    {name: "Préfiguration", description: "Indice subtil qui annonce un événement futur important"},
+                    {name: "Révélation", description: "Dévoilement d'une information cachée qui éclaire l'intrigue sous un nouveau jour"},
+                    {name: "Revers", description: "Échec ou défaite temporaire qui teste la résilience du héros"},
+                    {name: "Victoire", description: "Succès important qui marque une avancée significative dans la quête"},
+                    {name: "Moment le plus sombre", description: "Point où tout semble perdu et le héros touche le fond du désespoir"},
+                    {name: "Rédemption", description: "Processus par lequel un personnage se rachète de ses fautes passées"},
+                    {name: "Trahison", description: "Acte de déloyauté qui brise la confiance et modifie les alliances"},
+                    {name: "Sacrifice", description: "Acte de renoncement désintéressé pour une cause ou une personne plus grande"}
+                ],
+                "other": [
+                    {name: "Autre", description: "Élément narratif personnalisé ne correspondant pas aux catégories prédéfinies"}
+                ]
+            }
         };
         
         // Charger les données depuis le localStorage
@@ -830,12 +1018,16 @@
                 appData.locations = parsedData.locations || [];
                 appData.plotElements = parsedData.plotElements || [];
                 appData.storyRoles = parsedData.storyRoles || appData.storyRoles;
+                appData.locationTypes = parsedData.locationTypes || appData.locationTypes;
+                appData.plotTypes = parsedData.plotTypes || appData.plotTypes;
                 updateDashboard();
                 renderCharacters();
                 renderLocations();
                 renderPlotElements();
                 renderStoryRoles();
                 updateStoryRolesCheckboxes();
+                updateLocationTypesDropdown();
+                updatePlotTypesDropdown();
             }
         }
         
@@ -867,6 +1059,79 @@
             ];
             const randomTip = tips[Math.floor(Math.random() * tips.length)];
             document.getElementById('daily-tip').textContent = randomTip;
+        }
+        
+        // Mettre à jour la liste déroulante des types de lieux
+        function updateLocationTypesDropdown() {
+            const select = document.getElementById('location-type');
+            select.innerHTML = '';
+            
+            // Ajouter les types de lieux par catégorie
+            Object.keys(appData.locationTypes).forEach(category => {
+                const optgroup = document.createElement('optgroup');
+                
+                // Définir les labels des catégories
+                const categoryLabels = {
+                    "urban": "🏙️ Lieux urbains modernes",
+                    "nature": "🌲 Lieux naturels ou isolés", 
+                    "historical": "🕰️ Lieux chargés d'histoire",
+                    "futuristic": "🧬 Lieux futuristes ou technologiques",
+                    "mysterious": "🌙 Lieux mystérieux ou symboliques",
+                    "other": "Autres lieux"
+                };
+                
+                optgroup.label = categoryLabels[category] || category;
+                
+                appData.locationTypes[category].forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.textContent = type;
+                    optgroup.appendChild(option);
+                });
+                
+                select.appendChild(optgroup);
+            });
+        }
+        
+        // Mettre à jour la liste déroulante des types d'éléments narratifs
+        function updatePlotTypesDropdown() {
+            const select = document.getElementById('plot-element-type');
+            select.innerHTML = '';
+            
+            // Ajouter les types d'éléments narratifs par catégorie
+            Object.keys(appData.plotTypes).forEach(category => {
+                const optgroup = document.createElement('optgroup');
+                
+                // Définir les labels des catégories
+                const categoryLabels = {
+                    "structure": "🧩 Structure et dynamique de l'histoire",
+                    "emotions": "💔 Émotions et relations",
+                    "dramatic": "⚙️ Fonctions dramatiques secondaires",
+                    "symbolic": "🌙 Symboliques et thématiques",
+                    "classic": "🎭 Éléments narratifs classiques",
+                    "other": "Autres éléments narratifs"
+                };
+                
+                optgroup.label = categoryLabels[category] || category;
+                
+                appData.plotTypes[category].forEach(typeObj => {
+                    const option = document.createElement('option');
+                    option.value = typeObj.name;
+                    option.textContent = typeObj.name;
+                    option.title = typeObj.description; // Tooltip pour l'explication
+                    optgroup.appendChild(option);
+                });
+                
+                select.appendChild(optgroup);
+            });
+            
+            // Ajouter un événement pour afficher l'explication quand on survole une option
+            select.addEventListener('mouseover', function(e) {
+                if (e.target.tagName === 'OPTION' && e.target.title) {
+                    // Créer un tooltip personnalisé si nécessaire
+                    // Pour l'instant, on utilise l'attribut title natif
+                }
+            });
         }
         
         // Navigation par onglets
@@ -968,6 +1233,57 @@
             this.reset();
         });
         
+        // Formulaire pour ajouter un nouveau type de lieu
+        document.getElementById('custom-location-type-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newType = document.getElementById('new-location-type').value;
+            const category = document.getElementById('new-location-category').value;
+            
+            if (newType && !appData.locationTypes[category].includes(newType)) {
+                appData.locationTypes[category].push(newType);
+                saveData();
+                updateLocationTypesDropdown();
+                this.reset();
+                alert(`Type de lieu "${newType}" ajouté avec succès !`);
+            } else {
+                alert("Ce type de lieu existe déjà ou le champ est vide.");
+            }
+        });
+        
+        // Formulaire pour ajouter un nouveau type d'élément narratif
+        document.getElementById('custom-plot-type-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newType = document.getElementById('new-plot-type').value;
+            const category = document.getElementById('new-plot-category').value;
+            
+            if (newType) {
+                // Vérifier si le type existe déjà dans n'importe quelle catégorie
+                let typeExists = false;
+                Object.keys(appData.plotTypes).forEach(cat => {
+                    if (appData.plotTypes[cat].some(t => t.name === newType)) {
+                        typeExists = true;
+                    }
+                });
+                
+                if (!typeExists) {
+                    appData.plotTypes[category].push({
+                        name: newType,
+                        description: "Élément narratif personnalisé - ajoutez votre propre description"
+                    });
+                    saveData();
+                    updatePlotTypesDropdown();
+                    this.reset();
+                    alert(`Type d'élément narratif "${newType}" ajouté avec succès !`);
+                } else {
+                    alert("Ce type d'élément narratif existe déjà.");
+                }
+            } else {
+                alert("Le champ ne peut pas être vide.");
+            }
+        });
+        
         // Afficher les personnages
         function renderCharacters() {
             const container = document.getElementById('characters-list');
@@ -1050,25 +1366,6 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 
-                const typeLabels = {
-                    'inciting-incident': 'Élément déclencheur',
-                    'plot-point-1': 'Premier point de l\'intrigue',
-                    'plot-point-2': 'Deuxième point de l\'intrigue',
-                    'midpoint': 'Point médian',
-                    'climax': 'Climax',
-                    'resolution': 'Résolution',
-                    'twist': 'Rebondissement',
-                    'conflict': 'Conflit',
-                    'foreshadowing': 'Préfiguration',
-                    'revelation': 'Révélation',
-                    'setback': 'Revers',
-                    'victory': 'Victoire',
-                    'darkest-moment': 'Moment le plus sombre',
-                    'redemption': 'Rédemption',
-                    'betrayal': 'Trahison',
-                    'sacrifice': 'Sacrifice'
-                };
-                
                 const importanceLabels = {
                     'low': 'Faible',
                     'medium': 'Moyenne',
@@ -1078,7 +1375,7 @@
                 
                 card.innerHTML = `
                     <h3>${element.title}</h3>
-                    <p><strong>Type:</strong> ${typeLabels[element.type]}</p>
+                    <p><strong>Type:</strong> ${element.type}</p>
                     <p><strong>Importance:</strong> ${importanceLabels[element.importance]}</p>
                     <p>${element.description.substring(0, 100)}...</p>
                     <div class="card-actions">
@@ -1152,7 +1449,17 @@
         
         function viewPlotElement(id) {
             const element = appData.plotElements.find(p => p.id === id);
-            alert(`Titre: ${element.title}\nType: ${element.type}\nDescription: ${element.description}\nPersonnages: ${element.characters}\nLieux: ${element.locations}\nImportance: ${element.importance}`);
+            
+            // Trouver la description de cet élément narratif
+            let elementDescription = "Aucune description disponible";
+            Object.keys(appData.plotTypes).forEach(category => {
+                const found = appData.plotTypes[category].find(t => t.name === element.type);
+                if (found) {
+                    elementDescription = found.description;
+                }
+            });
+            
+            alert(`Titre: ${element.title}\nType: ${element.type}\nDescription: ${element.description}\nPersonnages: ${element.characters}\nLieux: ${element.locations}\nImportance: ${element.importance}\n\nExplication du type:\n${elementDescription}`);
         }
         
         function viewStoryRole(id) {
@@ -1380,6 +1687,37 @@
                         if (importedData.storyRoles) {
                             appData.storyRoles = [...appData.storyRoles, ...importedData.storyRoles];
                         }
+                        if (importedData.locationTypes) {
+                            // Fusionner les types de lieux
+                            Object.keys(importedData.locationTypes).forEach(category => {
+                                if (appData.locationTypes[category]) {
+                                    importedData.locationTypes[category].forEach(type => {
+                                        if (!appData.locationTypes[category].includes(type)) {
+                                            appData.locationTypes[category].push(type);
+                                        }
+                                    });
+                                } else {
+                                    appData.locationTypes[category] = importedData.locationTypes[category];
+                                }
+                            });
+                        }
+                        if (importedData.plotTypes) {
+                            // Fusionner les types d'éléments narratifs
+                            Object.keys(importedData.plotTypes).forEach(category => {
+                                if (appData.plotTypes[category]) {
+                                    importedData.plotTypes[category].forEach(newType => {
+                                        const exists = appData.plotTypes[category].some(existingType => 
+                                            existingType.name === newType.name
+                                        );
+                                        if (!exists) {
+                                            appData.plotTypes[category].push(newType);
+                                        }
+                                    });
+                                } else {
+                                    appData.plotTypes[category] = importedData.plotTypes[category];
+                                }
+                            });
+                        }
                     } else {
                         // Remplacer les données existantes
                         appData = importedData;
@@ -1391,6 +1729,8 @@
                     renderPlotElements();
                     renderStoryRoles();
                     updateStoryRolesCheckboxes();
+                    updateLocationTypesDropdown();
+                    updatePlotTypesDropdown();
                     
                     document.getElementById('import-modal').style.display = 'none';
                     alert("Données importées avec succès!");
@@ -1431,6 +1771,8 @@
         // Initialiser l'application
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
+            updateLocationTypesDropdown();
+            updatePlotTypesDropdown();
             
             // Activer les générateurs d'inspiration
             document.getElementById('generate-conflict').click();
