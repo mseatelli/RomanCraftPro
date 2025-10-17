@@ -207,6 +207,11 @@
             background-color: var(--danger);
         }
         
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        
         .card {
             background-color: white;
             border-radius: 8px;
@@ -435,6 +440,72 @@
             opacity: 1;
         }
         
+        .plot-help-section {
+            background-color: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .plot-help-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .plot-help-item h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .plot-help-content {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        .plot-help-content.active {
+            display: block;
+        }
+        
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+        
+        .quick-help-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 8px var(--shadow);
+            z-index: 100;
+            cursor: pointer;
+        }
+        
         @media (max-width: 768px) {
             .form-row {
                 flex-direction: column;
@@ -458,6 +529,72 @@
             .plot-tooltip .tooltiptext {
                 width: 250px;
                 margin-left: -125px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 15px;
+            }
+            
+            .tab-content {
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Styles pour le sélecteur d'éléments narratifs sur mobile */
+        .plot-select-wrapper {
+            position: relative;
+        }
+        
+        .plot-info-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        /* Mode paysage sur mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .app-container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+            
+            .nav-tabs {
+                margin-bottom: 10px;
+            }
+            
+            .tab-content {
+                padding: 15px;
+                margin-bottom: 10px;
             }
         }
     </style>
@@ -672,16 +809,63 @@
         <!-- Intrigue -->
         <div id="plot" class="tab-content">
             <h2>Développement de l'intrigue</h2>
-            <p>Structurez votre histoire avec des éléments narratifs clés. <span class="plot-tooltip">Passez votre souris sur les éléments pour voir leur explication
-                <span class="tooltiptext">Chaque élément narratif a une fonction spécifique dans la construction de votre histoire. Ces explications vous aideront à choisir les bons éléments pour chaque moment de votre récit.</span>
-            </span></p>
+            <p>Structurez votre histoire avec des éléments narratifs clés.</p>
+            
+            <!-- Section d'aide pour les éléments narratifs -->
+            <div class="plot-help-section">
+                <h3>Guide des éléments narratifs 
+                    <span class="info-icon" id="plot-help-toggle">?</span>
+                </h3>
+                <p>Besoin d'aide pour choisir le bon élément narratif ? Consultez ce guide :</p>
+                
+                <div class="plot-help-item" data-category="structure">
+                    <h4>🧩 Structure et dynamique <span class="info-icon">+</span></h4>
+                    <div class="plot-help-content">
+                        <!-- Le contenu sera généré dynamiquement -->
+                    </div>
+                </div>
+                
+                <div class="plot-help-item" data-category="emotions">
+                    <h4>💔 Émotions et relations <span class="info-icon">+</span></h4>
+                    <div class="plot-help-content">
+                        <!-- Le contenu sera généré dynamiquement -->
+                    </div>
+                </div>
+                
+                <div class="plot-help-item" data-category="dramatic">
+                    <h4>⚙️ Fonctions dramatiques <span class="info-icon">+</span></h4>
+                    <div class="plot-help-content">
+                        <!-- Le contenu sera généré dynamiquement -->
+                    </div>
+                </div>
+                
+                <div class="plot-help-item" data-category="symbolic">
+                    <h4>🌙 Symboliques et thématiques <span class="info-icon">+</span></h4>
+                    <div class="plot-help-content">
+                        <!-- Le contenu sera généré dynamiquement -->
+                    </div>
+                </div>
+                
+                <div class="plot-help-item" data-category="classic">
+                    <h4>🎭 Éléments classiques <span class="info-icon">+</span></h4>
+                    <div class="plot-help-content">
+                        <!-- Le contenu sera généré dynamiquement -->
+                    </div>
+                </div>
+            </div>
             
             <form id="plot-form">
-                <div class="form-group">
-                    <label for="plot-element-type">Type d'élément narratif</label>
+                <div class="form-group plot-select-wrapper">
+                    <label for="plot-element-type">
+                        Type d'élément narratif 
+                        <span class="info-icon" id="current-element-info" style="display: none;">i</span>
+                    </label>
                     <select id="plot-element-type">
                         <!-- Les options seront générées dynamiquement -->
                     </select>
+                    <button type="button" class="plot-info-btn" id="plot-info-btn" style="display: none;">
+                        <span class="info-icon">i</span>
+                    </button>
                 </div>
                 
                 <div class="form-group">
@@ -835,6 +1019,9 @@
         </footer>
     </div>
 
+    <!-- Bouton d'aide rapide (mobile) -->
+    <div class="quick-help-btn" id="quick-help-btn">?</div>
+
     <!-- Modal d'exportation -->
     <div class="modal" id="export-modal">
         <div class="modal-content">
@@ -869,6 +1056,19 @@
                 </label>
             </div>
             <button class="btn" id="confirm-import">Importer</button>
+        </div>
+    </div>
+
+    <!-- Modal d'explication des éléments narratifs -->
+    <div class="modal" id="plot-info-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="plot-info-title">Explication</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="plot-info-content">
+                <!-- Le contenu sera généré dynamiquement -->
+            </div>
         </div>
     </div>
 
@@ -1028,6 +1228,7 @@
                 updateStoryRolesCheckboxes();
                 updateLocationTypesDropdown();
                 updatePlotTypesDropdown();
+                updatePlotHelpContent();
             }
         }
         
@@ -1118,18 +1319,54 @@
                     const option = document.createElement('option');
                     option.value = typeObj.name;
                     option.textContent = typeObj.name;
-                    option.title = typeObj.description; // Tooltip pour l'explication
+                    option.dataset.description = typeObj.description;
                     optgroup.appendChild(option);
                 });
                 
                 select.appendChild(optgroup);
             });
             
-            // Ajouter un événement pour afficher l'explication quand on survole une option
-            select.addEventListener('mouseover', function(e) {
-                if (e.target.tagName === 'OPTION' && e.target.title) {
-                    // Créer un tooltip personnalisé si nécessaire
-                    // Pour l'instant, on utilise l'attribut title natif
+            // Gérer l'affichage du bouton d'information
+            const plotInfoBtn = document.getElementById('plot-info-btn');
+            const currentElementInfo = document.getElementById('current-element-info');
+            
+            select.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                if (selectedOption && selectedOption.dataset.description) {
+                    plotInfoBtn.style.display = 'block';
+                    currentElementInfo.style.display = 'inline-block';
+                } else {
+                    plotInfoBtn.style.display = 'none';
+                    currentElementInfo.style.display = 'none';
+                }
+            });
+            
+            // Déclencher l'événement change pour l'état initial
+            select.dispatchEvent(new Event('change'));
+        }
+        
+        // Mettre à jour le contenu d'aide pour les éléments narratifs
+        function updatePlotHelpContent() {
+            Object.keys(appData.plotTypes).forEach(category => {
+                const helpItem = document.querySelector(`.plot-help-item[data-category="${category}"]`);
+                if (helpItem) {
+                    const content = helpItem.querySelector('.plot-help-content');
+                    content.innerHTML = '';
+                    
+                    appData.plotTypes[category].forEach(typeObj => {
+                        const elementDiv = document.createElement('div');
+                        elementDiv.style.marginBottom = '10px';
+                        elementDiv.style.padding = '8px';
+                        elementDiv.style.backgroundColor = 'var(--light)';
+                        elementDiv.style.borderRadius = '4px';
+                        
+                        elementDiv.innerHTML = `
+                            <strong>${typeObj.name}</strong>
+                            <p style="margin: 5px 0 0 0; font-size: 0.9rem;">${typeObj.description}</p>
+                        `;
+                        
+                        content.appendChild(elementDiv);
+                    });
                 }
             });
         }
@@ -1274,6 +1511,7 @@
                     });
                     saveData();
                     updatePlotTypesDropdown();
+                    updatePlotHelpContent();
                     this.reset();
                     alert(`Type d'élément narratif "${newType}" ajouté avec succès !`);
                 } else {
@@ -1281,6 +1519,52 @@
                 }
             } else {
                 alert("Le champ ne peut pas être vide.");
+            }
+        });
+        
+        // Afficher les explications des éléments narratifs (pour mobile)
+        document.getElementById('plot-info-btn').addEventListener('click', function() {
+            const select = document.getElementById('plot-element-type');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (selectedOption && selectedOption.dataset.description) {
+                document.getElementById('plot-info-title').textContent = selectedOption.textContent;
+                document.getElementById('plot-info-content').textContent = selectedOption.dataset.description;
+                document.getElementById('plot-info-modal').style.display = 'flex';
+            }
+        });
+        
+        // Gérer l'affichage des sections d'aide
+        document.querySelectorAll('.plot-help-item h4').forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.parentElement.querySelector('.plot-help-content');
+                const isActive = content.classList.contains('active');
+                
+                // Fermer toutes les sections
+                document.querySelectorAll('.plot-help-content').forEach(c => {
+                    c.classList.remove('active');
+                });
+                
+                // Ouvrir la section cliquée si elle était fermée
+                if (!isActive) {
+                    content.classList.add('active');
+                }
+            });
+        });
+        
+        // Bouton d'aide rapide (mobile)
+        document.getElementById('quick-help-btn').addEventListener('click', function() {
+            // Aller à l'onglet Intrigue et ouvrir la section d'aide
+            document.querySelector('[data-tab="plot"]').click();
+            
+            // Ouvrir la première section d'aide
+            const firstHelpItem = document.querySelector('.plot-help-item');
+            if (firstHelpItem) {
+                const content = firstHelpItem.querySelector('.plot-help-content');
+                content.classList.add('active');
+                
+                // Scroll vers la section d'aide
+                content.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
         
@@ -1731,6 +2015,7 @@
                     updateStoryRolesCheckboxes();
                     updateLocationTypesDropdown();
                     updatePlotTypesDropdown();
+                    updatePlotHelpContent();
                     
                     document.getElementById('import-modal').style.display = 'none';
                     alert("Données importées avec succès!");
@@ -1768,11 +2053,22 @@
             }
         });
         
+        // Détection mobile
+        function isMobileDevice() {
+            return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+        }
+        
         // Initialiser l'application
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
             updateLocationTypesDropdown();
             updatePlotTypesDropdown();
+            updatePlotHelpContent();
+            
+            // Cacher le bouton d'aide rapide sur desktop
+            if (!isMobileDevice()) {
+                document.getElementById('quick-help-btn').style.display = 'none';
+            }
             
             // Activer les générateurs d'inspiration
             document.getElementById('generate-conflict').click();
